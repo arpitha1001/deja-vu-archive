@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glitch in the Archive — Lost Timelines</title>
+<meta name="description" content="An interactive archive of moments that could have changed everything. Explore alternate histories and create your own what-if stories.">
+<style>
+:root {
+  --bg: #11110f;
+  --panel: #1a1a17;
+  --text: #f0eee5;
+  --muted: #929188;
+  --accent: #ff7048;
+  --line: #34342e;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+header {
+  padding: 22px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.logo { font-size: 13px; letter-spacing: 2px; font-weight: bold; }
+.logo span { color: var(--accent); }
+.status { color: var(--muted); font-size: 11px; letter-spacing: 1px; }
+.status::before {
+  content: "●"; color: var(--accent); margin-right: 8px;
+}
+main { max-width: 1100px; margin: auto; padding: 55px 7% 80px; }
+.eyebrow {
+  color: var(--accent); font-size: 11px;
+  letter-spacing: 3px; text-transform: uppercase;
+}
+h1 {
+  font-size: clamp(43px, 8vw, 88px);
+  line-height: .98; letter-spacing: -5px;
+  max-width: 800px; margin: 23px 0;
+}
+h1 em { color: var(--accent); font-family: Georgia, serif; font-weight: normal; }
+.intro { color: #aaa99f; line-height: 1.8; max-width: 490px; font-size: 14px; }
+.rule {
+  border: 0; border-top: 1px solid var(--line);
+  margin: 45px 0 25px;
+}
+.section-head {
+  display: flex; justify-content: space-between;
+  gap: 15px; align-items: center; margin-bottom: 20px;
+}
+.section-head h2 { font-size: 17px; font-weight: normal; }
+.section-head small { color: var(--muted); }
+.grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px;
+}
+.card {
+  background: var(--panel); border: 1px solid var(--line);
+  padding: 22px; min-height: 250px; display: flex;
+  flex-direction: column; transition: border-color .2s, transform .2s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.card .number { color: var(--accent); font-size: 11px; letter-spacing: 2px; }
+.card h3 { font-size: 23px; line-height: 1.2; margin: 27px 0 12px; }
+.card p { color: var(--muted); font-size: 13px; line-height: 1.7; flex: 1; }
+.card button, .outline {
+  background: none; border: 1px solid #55554b; color: var(--text);
+  padding: 12px 14px; text-align: left; font-size: 12px;
+}
+.card button:hover, .outline:hover { border-color: var(--accent); color: var(--accent); }
+.lab {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 30px; padding: 28px; background: var(--panel);
+  border: 1px solid var(--line);
+}
+.lab h2 { font-size: 27px; margin: 12px 0; }
+.lab p { color: var(--muted); font-size: 13px; line-height: 1.8; }
+.field { display: grid; gap: 8px; margin-bottom: 13px; }
+label { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+input, textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--line);
+  color: var(--text); padding: 12px; outline: none; border-radius: 0;
+}
+input:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 75px; }
+.primary {
+  background: var(--accent); border: 1px solid var(--accent);
+  color: #18110e; padding: 13px 17px; font-weight: bold; font-size: 12px;
+}
+.primary:hover { background: #ff9275; }
+.story { border: 1px solid var(--line); padding: 25px; margin-top: 22px; }
+.story h2 { font-family: Georgia, serif; font-size: 29px; font-weight: normal; }
+.story p { color: #c3c1b6; line-height: 1.9; font-size: 14px; }
+.choices { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+.choices button { flex: 1; min-width: 160px; }
+.outcome {
+  display: none; background: #24211b; border-left: 3px solid var(--accent);
+  padding: 20px; margin-top: 18px;
+}
+.outcome h3 { color: var(--accent); margin-top: 0; }
+.outcome p { line-height: 1.8; font-size: 14px; }
+.tag { font-size: 10px; letter-spacing: 2px; color: var(--accent); }
+footer {
+  border-top: 1px solid var(--line); padding: 24px 7%;
+  display: flex; justify-content: space-between; gap: 12px;
+  color: var(--muted); font-size: 11px;
+}
+@media (max-width: 700px) {
+  header { padding: 18px 5%; }
+  main { padding: 40px 5% 60px; }
+  h1 { letter-spacing: -2px; }
+  .grid { grid-template-columns: 1fr; }
+  .card { min-height: 215px; }
+  .lab { grid-template-columns: 1fr; padding: 20px; }
+  .rule { margin: 32px 0 20px; }
+  footer { padding: 22px 5%; flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">G<span>/</span>A &nbsp; GLITCH ARCHIVE</div>
+  <div class="status">ARCHIVE ONLINE</div>
+</header>
+
+<main>
+  <div class="eyebrow">Independent research · Vol. 001</div>
+  <h1>History is full of<br>almosts<span style="color:var(--accent)">.</span></h1>
+  <p class="intro">
+    Somewhere between what happened and what could have happened
+    lies another story. Enter the archive. Change one decision.
+    Discover a different world.
+  </p>
+
+  <hr class="rule">
+  <div class="section-head">
+    <h2>01 / Recovered artifacts</h2>
+    <small id="count">03 RECORDS</small>
+  </div>
+  <div class="grid" id="archive"></div>
+
+  <hr class="rule">
+  <div class="section-head">
+    <h2>02 / Timeline laboratory</h2>
+    <small>YOUR TURN TO CHANGE HISTORY</small>
+  </div>
+  <div class="lab">
+    <div>
+      <div class="eyebrow">Create an alternate reality</div>
+      <h2>One small change.<br>A different universe.</h2>
+      <p>
+        Invent a moment that could have gone differently.
+        Give it two possible outcomes and add your story to this
+        browser's archive.
+      </p>
+      <p>Custom records are saved locally on this device.</p>
+    </div>
+    <form id="createForm">
+      <div class="field">
+        <label for="title">ARTIFACT TITLE</label>
+        <input id="title" required maxlength="65" placeholder="The Call at 11:59 PM">
+      </div>
+      <div class="field">
+        <label for="moment">THE MOMENT THAT CHANGED</label>
+        <textarea id="moment" required maxlength="350" placeholder="Describe the moment..."></textarea>
+      </div>
+      <div class="field">
+        <label for="choiceA">TIMELINE A — WHAT HAPPENS?</label>
+        <textarea id="choiceA" required maxlength="350" placeholder="If the person makes the first choice..."></textarea>
+      </div>
+      <div class="field">
+        <label for="choiceB">TIMELINE B — WHAT IF?</label>
+        <textarea id="choiceB" required maxlength="350" placeholder="But if they choose differently..."></textarea>
+      </div>
+      <button class="primary" type="submit">+ ADD TO THE ARCHIVE</button>
+    </form>
+  </div>
+
+  <div id="reader" class="story" hidden aria-live="polite">
+    <div class="tag" id="readerTag">ARTIFACT 001</div>
+    <h2 id="readerTitle"></h2>
+    <p id="readerMoment"></p>
+    <div class="choices" id="choices"></div>
+    <div class="outcome" id="outcome">
+      <h3 id="outcomeTitle"></h3>
+      <p id="outcomeText"></p>
+    </div>
+    <button class="outline" id="closeReader" style="margin-top:16px">
+      ← RETURN TO ARCHIVE
+    </button>
+  </div>
+</main>
+
+<footer>
+  <span>GLITCH IN THE ARCHIVE © 2026</span>
+  <span>FICTIONAL RECORDS · UNWRITTEN HISTORIES</span>
+</footer>
+
+<script>
+const originals = [
+  {
+    id: "001",
+    title: "The Email Never Sent",
+    description: "One unsent message. Two lives that never quite meet.",
+    moment: "At 11:47 PM, a student writes an email that could change their future. Their finger hovers over Send.",
+    a: "They send it. The reply arrives three days later: an invitation to an opportunity they never imagined. Their plans begin to change.",
+    b: "They save it as a draft. Months pass. The opportunity closes, and the words remain buried in a folder called Unfinished."
+  },
+  {
+    id: "002",
+    title: "The Last Train",
+    description: "A missed connection becomes an unexpected beginning.",
+    moment: "A train is delayed by four minutes. A stranger at the station asks whether the next platform is the right one.",
+    a: "They help the stranger find the platform. A brief conversation turns into a friendship neither had planned.",
+    b: "They keep walking. Both board separate trains, never knowing how a single conversation might have changed their week."
+  },
+  {
+    id: "003",
+    title: "The Accidental Discovery",
+    description: "A mistake in a notebook. An idea that shouldn't work.",
+    moment: "A young inventor notices that a calculation in their notebook is wrong. The result, however, is strangely promising.",
+    a: "They investigate the error. After weeks of experiments, they discover a useful technique hidden inside their mistake.",
+    b: "They correct the calculation immediately. The notebook is filed away, and the unexpected idea disappears with the error."
+  }
+];
+
+let custom = [];
+let activeArtifact = null;
+
+try {
+  custom = JSON.parse(localStorage.getItem("glitch-custom") || "[]");
+  if (!Array.isArray(custom)) custom = [];
+} catch {
+  custom = [];
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+function allArtifacts() {
+  return [...originals, ...custom];
+}
+
+function renderArchive() {
+  const artifacts = allArtifacts();
+  document.getElementById("count").textContent =
+    String(artifacts.length).padStart(2, "0") + " RECORDS";
+
+  document.getElementById("archive").innerHTML = artifacts.map((item, i) => `
+    <article class="card">
+      <div class="number">RECORD / ${String(i + 1).padStart(3, "0")}</div>
+      <h3>${escapeHTML(item.title)}</h3>
+      <p>${escapeHTML(item.description || item.moment)}</p>
+      <button data-open="${escapeHTML(item.id)}">INSPECT ARTIFACT ↗</button>
+    </article>
+  `).join("");
+}
+
+function openArtifact(id) {
+  const item = allArtifacts().find(record => record.id === id);
+  if (!item) return;
+
+  activeArtifact = item;
+  const reader = document.getElementById("reader");
+  reader.hidden = false;
+
+  document.getElementById("readerTag").textContent = "RECORD / " + item.id;
+  document.getElementById("readerTitle").textContent = item.title;
+  document.getElementById("readerMoment").textContent = item.moment;
+  document.getElementById("outcome").style.display = "none";
+
+  const choices = document.getElementById("choices");
+  choices.replaceChildren();
+
+  [
+    { label: "TIMELINE A ↗", key: "a" },
+    { label: "TIMELINE B ↗", key: "b" }
+  ].forEach(choice => {
+    const button = document.createElement("button");
+    button.className = "outline";
+    button.textContent = choice.label;
+    button.addEventListener("click", () => showOutcome(choice.key));
+    choices.appendChild(button);
+  });
+
+  reader.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showOutcome(key) {
+  if (!activeArtifact) return;
+  document.getElementById("outcomeTitle").textContent =
+    key === "a" ? "TIMELINE A / THE CHOICE" : "TIMELINE B / THE ALTERNATIVE";
+  document.getElementById("outcomeText").textContent = activeArtifact[key];
+  document.getElementById("outcome").style.display = "block";
+}
+
+document.getElementById("archive").addEventListener("click", event => {
+  const button = event.target.closest("[data-open]");
+  if (button) openArtifact(button.dataset.open);
+});
+
+document.getElementById("closeReader").addEventListener("click", () => {
+  document.getElementById("reader").hidden = true;
+  document.getElementById("archive").scrollIntoView({ behavior: "smooth" });
+});
+
+document.getElementById("createForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const item = {
+    id: "U" + Date.now().toString(36),
+    title: document.getElementById("title").value.trim(),
+    description: "An original alternate timeline, created by you.",
+    moment: document.getElementById("moment").value.trim(),
+    a: document.getElementById("choiceA").value.trim(),
+    b: document.getElementById("choiceB").value.trim()
+  };
+
+  if (!item.title || !item.moment || !item.a || !item.b) return;
+
+  custom.push(item);
+
+  try {
+    localStorage.setItem("glitch-custom", JSON.stringify(custom));
+  } catch {
+    custom.pop();
+    alert("This browser could not save the artifact. Try a smaller entry.");
+    return;
+  }
+
+  event.target.reset();
+  renderArchive();
+  openArtifact(item.id);
+});
+
+renderArchive();
+</script>
+</body>
+</html>
